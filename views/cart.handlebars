@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+     <div class="row-md-4 d-flex align-items-center justify-content-center">
+                 <ul class="nav justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/login">Login</a>
+                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link text-white" href="/register">Registrarse</a>
+                     </li>
+                      <li class="nav-item">
+                        <a class="nav-link text-white" href="/realtimeProducts">Formulario</a>
+                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link text-white" href="/chat">Chat</a>
+                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link text-white" href="/products">Terapias</a>
+                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/profile">Tu perfil</a>
+                     </li>
+                     <li>
+                        <button id="cartButton">🛒</button>
+                     </li>
+                 </ul>
+            </div>
+            <div class="container">
+    <h1 class="color1">Carrito</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table">
+        <ul class="color1">
+          {{#each products}}
+            <li>
+              {{this.product.title}}
+              - ${{this.product.price}}
+              - Cantidad:
+              {{this.quantity}}
+            </li>
+          {{/each}}
+        </ul>
+        <div class="color1">
+        <button onclick="realizarCompra()" class="botons">Realizar Compra</button>
+        </div>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+<script src="../src/public/cart.js"></script>
+</html>

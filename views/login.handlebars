@@ -1,0 +1,56 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../src/public/css/style.css">
+  <title>Document</title>
+</head>
+<body>
+     <div class="row-md-4 d-flex align-items-center justify-content-center">
+                 <ul class="nav justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/login">Login</a>
+                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link text-white" href="/register">Registrarse</a>
+                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/profile">Tu perfil</a>
+                     </li>
+                 </ul>
+            </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <h1 class="color1">Okuna te da la bienvenida</h1>
+            <h2 class="color2">Para acceder a nuestras terapias ingresa aqui</h2>
+      
+        <form class="form_main" action="">
+          <div class="login-form">
+            <label class="form-label"></label>
+            <div class="inputContainer">
+              <input type="text" class="form-control" id="email" placeholder="Username"/>
+            </div>
+          </div>
+          <div class="login-form">
+            <label class="form-label"></label>
+            <div class="inputContainer">
+              <input type="password" class="form-control" id="password" placeholder="Password"/>
+            </div>
+          </div>
+          <div class="col-md-4 offset-md-4 p-3">
+             <div class="color2"><button type="button" class="botons" id="btnLogIn">Ingresar</button></div></div>
+        </form>
+
+        <div class="color1" >
+        <a href="/api/sessions/github">
+        <button class="botons">Entrar con Github</button>
+        </a>
+</div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../src/public/js/login.js"></script>
+</html>
