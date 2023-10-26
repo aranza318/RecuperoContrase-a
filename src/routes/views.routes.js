@@ -28,6 +28,20 @@ const viewsRouter = express.Router();
 const PM = new ProductManager();
 const CM = new CartManager();
 
+async function loadUserCart(req, res, next) {
+  if (req.session && req.session.user) {
+    const cartId = req.session.user.cart;
+    console.log('Cart ID:', cartId);  
+
+    const cartManager = new CartManager();
+    const cart = await cartManager.getCart(cartId);
+    console.log('Cart:', cart); 
+
+    req.cart = cart;
+  }
+  next();
+}
+
 viewsRouter.get("/", checkSession, async (req, res) => {
   const products = await PM.getProducts(req.query);
   res.render("home", { products});
@@ -51,10 +65,8 @@ viewsRouter.get("/products/:pid", async (req, res) => {
   }
 });
 
-viewsRouter.get("/carts/:cid", async (req, res) => {
-  const cid = req.params.cid;
-  const cart = await CM.getCart(cid);
-
+viewsRouter.get("/carts", loadUserCart, async (req, res) => {
+  const cart = req.cart;
   if (cart) {
     console.log(JSON.stringify(cart, null, 4));
     res.render("cart", { products: cart.products });

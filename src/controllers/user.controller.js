@@ -49,7 +49,7 @@ class UserController {
       const { user, pass } = req.query;
       const passwordRestored = await this.userService.restorePassword(user, createHash(pass));
       if (passwordRestored) {
-        return res.send({status: "OK", message: "La contraseña se ha actualizado correctamente!"});
+        return res.send({status: "OK", message: "La contraseña se ha actualizado correctamente"});
       } else {
         const customeError = new CustomeError({
           name: "Restore Error",

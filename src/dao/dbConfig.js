@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { MONGODB_CNX_STR } from "../config/configs.js";
+import Logger from "../config/logger.js";
 
+const log = new Logger();
 const URI = MONGODB_CNX_STR
 
 try {
@@ -8,7 +10,7 @@ try {
         useNewUrlParser: true,
         useUnifiedTopology: true
       }))
-    console.log("Conectado a MongoDB");
+    log.logger.info("Conectado a MongoDB");
 } catch (error) {
-    console.log(error);
+    log.logger.error(error);
 }

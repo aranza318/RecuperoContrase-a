@@ -1,6 +1,6 @@
 import passport from "passport";
 import GitHubStrategy from "passport-github2";
-import usersModel from "../dao/models/user.model.js"
+import { userModel } from "../dao/models/user.model.js"
 import { CLIENT_ID_GITHUB, CLIENT_SECRET_GITHUB } from "../config/configs.js";
 import AuthenticationService from "../services/auth.service.js";
 
@@ -33,7 +33,7 @@ const initializeGitHubPassport = () => {
     });
 
     passport.deserializeUser(async (id, done) => {
-        let user = await usersModel.findById(id);
+        let user = await userModel.findById(id);
         done(null, user);
     });
 };

@@ -1,6 +1,6 @@
 import passport from "passport"
 import local from "passport-local"
-import usersModel from "../dao/models/user.model.js"
+import { userModel } from "../dao/models/user.model.js"
 import {createHash,isValidPassword} from "../midsIngreso/bcrypt.js"
 import jwt from "passport-jwt"
 import CartService from "../services/cart.service.js"
@@ -18,7 +18,7 @@ const initializePassport = ()=>{
       async (req, username, password, done) => {
         const { first_name, last_name, email, age } = req.body;
         try {
-          let user = await usersModel.findOne({ email: username });
+          let user = await userModel.findOne({ email: username });
           if (user) {
             console.log("El usuario " + email + " ya se encuentra registrado!");
             return done(null, false);
@@ -40,7 +40,7 @@ const initializePassport = ()=>{
             user.role = 'user';
           }
           console.log("Rol después de la asignación:", user.rol);
-          let result = await usersModel.create(user);
+          let result = await userModel.create(user);
           console.log("Usuario después de guardar:", result);
           if (result) {
             return done(null, result);
@@ -61,7 +61,7 @@ passport.use(
         console.log("[Auth] Trying to authenticate user:", username);
 
         try {
-          let user = await usersModel.findOne({ email: username });
+          let user = await userModel.findOne({ email: username });
 
           if (!user) {
             return done(null, false, { message: "Usuario incorrecto." });
@@ -88,7 +88,7 @@ passport.use("jwt", new JWTStrategy ({jwtFromRequest: ExtractJWT.fromExtractors(
     secretOrKey:"S3CR3T0NTH3M0UNT41N", }, 
     async(jwt_payload, done)=>{
         try {
-            const user = await usersModel.findOne({email: jwt_payload.email});
+            const user = await userModel.findOne({email: jwt_payload.email});
             if(!user){
                 return done (null, false, {message: "Usuario no encontrado en nuestra base de datos"})
             }
@@ -104,7 +104,7 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser(async(id, done) => {
-    let user = await usersModel.findById(id)
+    let user = await userModel.findById(id)
     done(null, user)
 })
 

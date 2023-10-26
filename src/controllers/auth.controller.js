@@ -1,15 +1,11 @@
 import AuthenticationService from "../services/auth.service.js";
 import { authError } from "../services/errors/errorMessages/user.auth.error.js";
 import CustomeError from "../services/errors/customeError.js";
-import CartService from "../services/cart.service.js";
-import UserService from "../services/user.service.js";
 
 
 class AuthController {
   constructor() {
     this.authService = new AuthenticationService();
-    this.cartsService = new CartService();
-    this.userService = new UserService();
   }
 
   async login(req, res, next) {
@@ -35,13 +31,13 @@ class AuthController {
     if (userData && userData.user) {
       console.log("Setting session and cookie");
       req.session.user = {
-        id: userData.user.id || userData.user._id, 
+        id: userData.user.id || userData.user._id,
         email: userData.user.email,
-        first_name: userData.user.first_name, 
-        last_name: userData.user.last_name, 
+        first_name:  userData.user.first_name,
+        last_name:  userData.user.last_name,
         age: userData.user.age,
         role: userData.user.role,
-        
+        cart: userData.user.cart
       };
       
     }

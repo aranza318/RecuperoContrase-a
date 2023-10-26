@@ -1,6 +1,6 @@
 import UserManager from '../dao/userManager.js';
 import jwt from 'jsonwebtoken';
-import usersModel from '../dao/models/user.model.js';
+import { userModel } from '../dao/models/user.model.js';
 import { JWT_KEY } from '../config/configs.js';
 
 class AuthService {
@@ -35,10 +35,10 @@ class AuthService {
         profile._json.email = 'no-email@example.com';
       }
   
-      let user = await usersModel.findOne({ email: profile._json.email });
+      let user = await userModel.findOne({ email: profile._json.email });
   
       if (!user) {
-        user = await usersModel.create({
+        user = await userModel.create({
           first_name: profile._json.name || 'Unknown',
           last_name: '',
           email: profile._json.email,

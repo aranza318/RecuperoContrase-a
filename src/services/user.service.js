@@ -1,18 +1,27 @@
 import UserManager from "../dao/userManager.js";
 import { ADMIN_EMAIL, ADMIN_PASSWORD } from "../config/configs.js";
+import CartManager from "../dao/cartManager.js";
 
 class UserService {
   constructor() {
     this.userManager = new UserManager();
+    this.cartManager = new CartManager();
   }
 
   async registerUser({ first_name, last_name, email, age, password, role }) {
     try {
+      const cartResponse = await this.cartManager.newCart();
+      console.log("Cart response:", cartResponse);
+      if (cartResponse.status !== "ok") {
+        return { status: "error", message: "Error creating cart" };
+      }
       const role =
         email == ADMIN_EMAIL &&
         password === ADMIN_PASSWORD
           ? "admin"
           : "user";
+      const cartId = cartResponse.id;
+      console.log("Cart ID:", cartId);
       const user = await this.userManager.addUser({
         first_name,
         last_name,
@@ -20,6 +29,7 @@ class UserService {
         age,
         password,
         role,
+        cart: cartId,
       });
 
       if (user) {
@@ -37,11 +47,6 @@ class UserService {
     return await this.userManager.restorePassword(user, hashedPassword);
   }
 
-  async updateUser(userId, userToReplace) {
-
-    const result = await this.userManager.updateUser(userId, userToReplace);
-    return result;
-}
 }
 
 export default UserService;
