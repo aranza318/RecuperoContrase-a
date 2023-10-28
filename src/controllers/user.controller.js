@@ -59,7 +59,7 @@ class UserController {
         return next(customeError);  
       }
     } catch (error) {
-      console.error(error);
+      req.logger.error(error);
       return next(error);
     }
   }

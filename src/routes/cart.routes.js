@@ -37,7 +37,7 @@ cartsRouter.post("/:cid/purchase", (req, res, next) => {
 
       return res.json({ id: user.cart });
     } catch (error) {
-      console.error("Error obteniendo el carrito del usuario:", error);
+      req.logger.error("Error obteniendo el carrito del usuario:", error);
       return res.status(500).json({ error: "Error interno del servidor" });
     }
   });

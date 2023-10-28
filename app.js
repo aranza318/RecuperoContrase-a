@@ -22,13 +22,13 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { MONGODB_CNX_STR, PORT, SECRET_SESSIONS} from "./src/config/configs.js"
 import "./src/dao/dbConfig.js"
-import Logger from "./src/config/logger.js";
+import { addLogger, devLogger } from "./src/config/logger.js";
 
-const log = new Logger();
+
 const app = express();
 
 //Server
-const httpServer = app.listen(PORT, () => {log.logger.info(`conectado a ${PORT}`)})
+const httpServer = app.listen(PORT, () => {devLogger.info(`conectado a ${PORT}`)})
 export const socketServer = new Server(httpServer);
 
 //Socket Server
@@ -67,7 +67,7 @@ app.use(express.static(__dirname+"/src/public"));
 app.use("/images", express.static(__dirname+ "/src/public/images"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(log.addLogger);
+app.use(addLogger);
 app.use(morgan('dev'))
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
@@ -92,7 +92,7 @@ const CM = new CartManager();
 
 //Sockets on 
 socketServer.on("connection", async (socket) => {
-  log.logger.info("Un cliente se ha conectado");
+  console.log("Un cliente se ha conectado");
 
   const allProducts = await PM.getProducts();
   socket.emit("initial_products", allProducts);
@@ -104,7 +104,7 @@ socketServer.on("connection", async (socket) => {
 });
 
   socket.on("deleteProduct",async(id)=>{
-    log.logger.info(id);
+    console.log(id);
     const listadeproductos=await PM.getProductsViews();
     
     await PM.deleteProduct(id);
@@ -119,16 +119,16 @@ socketServer.on("connection", async (socket) => {
   });
 
   socket.on("nuevoUsuario",(usuario)=>{
-    log.logger.info("usuario", usuario);
+    console.log("usuario", usuario);
     socket.broadcast.emit("broadcast", usuario);
     });
 
   socket.on("disconnect", ()=>{
-    log.logger.info("Usuario desconectado");
+    console.log("Usuario desconectado");
     });
 
   socket.on("mensaje", async (info) =>{
-    log.logger.info(info);
+    console.log(info);
     await MM.createMessage(info);
     socketServer.emit("chat", await MM.getMessages());
 });

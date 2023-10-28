@@ -20,7 +20,7 @@ const initializePassport = ()=>{
         try {
           let user = await userModel.findOne({ email: username });
           if (user) {
-            console.log("El usuario " + email + " ya se encuentra registrado!");
+            req.logger.warn("El usuario " + email + " ya se encuentra registrado!");
             return done(null, false);
           }
           user = {
@@ -31,22 +31,22 @@ const initializePassport = ()=>{
             password: createHash(password),
             rol
           };
-          console.log("Rol antes de la asignación:", user.role);
+          req.logger.info("Rol antes de la asignación:", user.role);
           if (user.email == "adminCoder@coder.com" && password === "adminCod3r123") {
-            console.log("Asignando rol de admin");
+            req.logger.info("Asignando rol de admin");
             user.role = 'admin';
           } else {
-            console.log("Asignando rol de usuario");
+            req.logger.info("Asignando rol de usuario");
             user.role = 'user';
           }
-          console.log("Rol después de la asignación:", user.rol);
+          req.logger.info("Rol después de la asignación:", user.role);
           let result = await userModel.create(user);
-          console.log("Usuario después de guardar:", result);
+          req.logger.info("Usuario después de guardar:", result);
           if (result) {
             return done(null, result);
           }
         } catch (error) {
-          console.error("Error durante el proceso de registro:", error);
+         
           return done(error);
         }
       }

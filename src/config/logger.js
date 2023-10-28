@@ -1,5 +1,5 @@
-import winston, { debug } from "winston";
-import configs from "./configs";
+import winston from "winston";
+import configs from "./configs.js";
 
 //Opciones de logger
 
@@ -24,7 +24,7 @@ const customLevelOptions = {
 
 //Custom Logger
 
-const devLogger = winston.createLogger({
+export const devLogger = winston.createLogger({
     //Levels
     levels: customLevelOptions.levels,
     transports : [
@@ -34,7 +34,14 @@ const devLogger = winston.createLogger({
                 winston.format.colorize({colors: customLevelOptions.colors}),
                 winston.format.simple()
             )
-        })
+        }),
+        new winston.transports.File(
+            {
+                filename: './errors.log', 
+                level: 'warning', 
+                format: winston.format.simple()
+            }
+        )
     ]
 });
 
@@ -52,7 +59,7 @@ const prodLogger = winston.createLogger({
       }),
       new winston.transports.File({
           filename:'./errors.log',
-          level: "error",
+          level: 'error',
           format: winston.format.simple(),
       }),
   ]
@@ -81,6 +88,16 @@ class Logger {
      };
 
 
+};
+
+export const addLogger = (req, res, next) => {
+    if (configs.environment === 'production'){
+        req.logger = prodLogger;
+    } else {
+        req.logger = devLogger;
+    }
+    req.logger.info(`${req.method} en ${req.url} - at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`);
+    next();
 };
 
 export default Logger

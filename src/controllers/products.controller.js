@@ -20,7 +20,7 @@ class ProductController {
         code:500,
         cause:error.message,
       });
-      console.error(productErr);
+      req.logger.error(productErr);
       res.status(500).send({status:"error", message:"Error al obtener los productos"})
     }
   }
@@ -28,7 +28,7 @@ class ProductController {
   async getProductById(req, res, next) {
     try {
       const pid = req.params.pid;
-      console.log("Product ID:", pid);
+      req.logger.info("Product ID:", pid);
       if(!mongoose.Types.ObjectId.isValid(pid)){
         throw new CustomeError({
           name: "Invalid ID",
@@ -64,7 +64,7 @@ class ProductController {
       category,
       thumbnail,
     } = req.body;
-    console.log("Received thumbnail:", thumbnail);
+    req.logger.info("Received thumbnail:", thumbnail);
 
     if (!title) {
       res.status(400).send({
@@ -136,7 +136,7 @@ class ProductController {
       });
 
       if (wasAdded && wasAdded._id) {
-        console.log("Producto añadido correctamente:", wasAdded);
+        req.logger.info("Producto añadido correctamente:", wasAdded);
         res.send({
           status: "ok",
           message: "El Producto se agregó correctamente!",
@@ -154,7 +154,7 @@ class ProductController {
         });
         return;
       } else {
-        console.log("Error al añadir producto, wasAdded:", wasAdded);
+        req.logger.error("Error al añadir producto, wasAdded:", wasAdded);
         res.status(500).send({
           status: "error",
           message: "Error! No se pudo agregar el Producto!",
@@ -162,7 +162,7 @@ class ProductController {
         return;
       }
     } catch (error) {
-      console.error("Error en addProduct:", error, "Stack:", error.stack);
+      req.logger.error("Error en addProduct:", error, "Stack:", error.stack);
       res
         .status(500)
         .send({ status: "error", message: "Internal server error." });
@@ -208,7 +208,7 @@ class ProductController {
         });
       }
     } catch (error) {
-      console.error(error);
+      req.logger.error(error);
       res
         .status(500)
         .send({ status: "error", message: "Internal server error." });
@@ -220,7 +220,7 @@ class ProductController {
       const pid = req.params.pid;
 
       if (!mongoose.Types.ObjectId.isValid(pid)) {
-        console.log("ID del producto no válido");
+        req.logger.error("ID del producto no válido");
         res.status(400).send({
           status: "error",
           message: "ID del producto no válido",

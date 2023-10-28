@@ -29,14 +29,14 @@ serviceRouter.get(
   "/githubcallback",
   passport.authenticate("github", { failureRedirect: "/login" }),
   (req, res) => {
-    console.log("GitHub Callback Route");
+    req.logger.info("GitHub Callback Route");
     authController.githubCallback(req, res);
   }
 );
 serviceRouter.post("/logout", (req, res) => authController.logout(req, res));
 
 serviceRouter.get("/current", passportCall("jwt"), authorization("user"), (req, res) => {
-  console.log(req.cookies); 
+  req.logger.info(req.cookies); 
   userController.currentUser(req, res);
 });
 

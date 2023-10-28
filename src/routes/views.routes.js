@@ -4,22 +4,22 @@ import CartManager from "../dao/cartManager.js";
 import cartController from "../controllers/cart.controller.js";
 
 const checkSession = (req, res, next) => {
-  console.log('Checking session:', req.session);
+  req.logger.info('Checking session:', req.session);
 
   if (req.session && req.session.user) {
-    console.log('Session exists:', req.session.user);
+    req.logger.info('Session exists:', req.session.user);
     next();
   } else {
-    console.log('No session found, redirecting to /login');
+    req.logger.warn('No session found, redirecting to /login');
     res.redirect("/login");
   }
 };
 const checkAlreadyLoggedIn = (req, res, next) => {
   if (req.session && req.session.user) {
-    console.log("Usuario ya autenticado, redirigiendo a /profile");
+    req.logger.info("Usuario ya autenticado, redirigiendo a /profile");
     res.redirect("/profile");
   } else {
-    console.log("Usuario no autenticado, procediendo...");
+    req.logger.error("Usuario no autenticado, procediendo...");
     next();
   }
 };
@@ -31,11 +31,11 @@ const CM = new CartManager();
 async function loadUserCart(req, res, next) {
   if (req.session && req.session.user) {
     const cartId = req.session.user.cart;
-    console.log('Cart ID:', cartId);  
+    req.logger.info('Cart ID:', cartId);  
 
     const cartManager = new CartManager();
     const cart = await cartManager.getCart(cartId);
-    console.log('Cart:', cart); 
+    req.logger.info('Cart:', cart); 
 
     req.cart = cart;
   }
@@ -51,7 +51,7 @@ viewsRouter.get("/products", checkSession, async (req, res) => {
   const products = await PM.getProducts(req.query);
   const user = req.session.user;
   
-  console.log(user);
+  req.logger.info(user);
   res.render("products", { products, user });
 });
 
@@ -68,7 +68,7 @@ viewsRouter.get("/products/:pid", async (req, res) => {
 viewsRouter.get("/carts", loadUserCart, async (req, res) => {
   const cart = req.cart;
   if (cart) {
-    console.log(JSON.stringify(cart, null, 4));
+    req.logger.info(JSON.stringify(cart, null, 4));
     res.render("cart", { products: cart.products });
   } else {
     res.status(400).send({
@@ -103,7 +103,7 @@ viewsRouter.get("/profile", checkSession, (req, res) => {
   console.log('Inside /profile route');
 
   const userData = req.session.user;
-  console.log('User data:', userData);
+  req.logger.info('User data:', userData);
 
   res.render("profile", { user: userData });
 });

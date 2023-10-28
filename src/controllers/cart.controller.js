@@ -13,11 +13,13 @@ class CartController {
     try {
       const newCart = await this.cartService.createCart();
       res.send(newCart);
+      req.logger.info("Carrito creado: ", newCart)
     } catch (error) {
       res.status(500).send({
         status: "error",
         message: error.message,
       });
+      req.logger.error("Error al crear el carrito: ", error)
     }
   }
 
@@ -25,12 +27,13 @@ class CartController {
     try {
       const cart = await this.cartService.getCart(req.params.cid);
       res.send({ products: cart.products });
+      req.logger.info("Carrito obtenido: ", cart)
     } catch (error) {
-      console.log("hola en cart controller");
       res.status(400).send({
         status: "error",
         message: error.message,
       });
+      req.logger.error("Error al obtener el carrito: ", error)
     }
   }
 
@@ -97,11 +100,11 @@ class CartController {
   }
 
   async createPurchaseTicket(req, res) {
-    console.log("Ruta /carts/:cid/purchase accedida");
+    req.logger.info("Ruta /carts/:cid/purchase accedida");
 
     try {
       if (!req.user || !req.user.id) {
-        console.error("req.user no está definido");
+        req.logger.error("req.user no está definido");
         return res.status(400).json({ error: "Usuario no definido" });
       }
 
@@ -111,7 +114,7 @@ class CartController {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
 
-      console.log("Productos en el carrito:", cart.products);
+      req.logger.info("Productos en el carrito:", cart.products);
 
       const productManager = new ProductManager();
       const failedProducts = [];
@@ -121,13 +124,13 @@ class CartController {
         const product = await productManager.getProductById(item.product);
 
         if (!product) {
-          console.error(`Producto ${item.product} no encontrado`);
+          req.logger.error(`Producto ${item.product} no encontrado`);
           failedProducts.push(item);
           continue;
         }
 
         if (product.stock < item.quantity) {
-          console.error(
+          req.logger.error(
             `Stock insuficiente para el producto ${JSON.stringify(
               item.product
             )}`
@@ -173,7 +176,7 @@ class CartController {
         failedProducts: failedProducts.length > 0 ? failedProducts : undefined,
       });
     } catch (error) {
-      console.error("Error específico al crear el ticket de compra:", error);
+      req.logger.error("Error específico al crear el ticket de compra:", error);
       res.status(500).json({ error: "Error al crear el ticket de compra" });
     }
   }

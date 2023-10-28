@@ -2,7 +2,7 @@ import CustomeError from "./customeError.js";
 
 export default function errorHandler(err, req, res, next){
     if (err instanceof CustomeError){
-        console.log("Error personalizado capturado: ", err);
+        req.logger.info("Error personalizado capturado: ", err);
         res.status(Number.isInteger(err.code) ? err.code : 500).json({
             error:{
                 code: err.code || 500,
@@ -11,7 +11,7 @@ export default function errorHandler(err, req, res, next){
             }
         })
     } else {
-        console.error("Error no manejado capturado:", err);
+        req.logger.error("Error no manejado capturado:", err);
         res.status(500).json({
             error:{
                 code: 500,
