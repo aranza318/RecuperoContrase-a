@@ -1,11 +1,13 @@
-
 import { Router } from "express";
-import {sendEmail, sendEmailWithAttachments} from '../controllers/messages.controller.js';
+import { sendEmail } from '../controllers/messages.controller.js';
+import { passportCall } from "../midsIngreso/passAuth.js";
+import { sendPasswordRecoveryEmail } from "../controllers/messages.controller.js";
 
 const emailRouter = Router();
 
-emailRouter.get("/", sendEmail);
-emailRouter.get("/attachments", sendEmailWithAttachments);
+emailRouter.get("/", passportCall('jwt'), sendEmail);
+
+emailRouter.post("/api/email/sendRestoreLink", sendPasswordRecoveryEmail);
 
 export default emailRouter;
 

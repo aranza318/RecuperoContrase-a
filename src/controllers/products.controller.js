@@ -3,16 +3,32 @@ import { socketServer } from "../../app.js";
 import mongoose from "mongoose";
 import CustomeError from "../services/errors/customeError.js";
 import { productError } from "../services/errors/errorMessages/product.error.js";
+import UserService from "../services/user.service.js";
 
 class ProductController {
   constructor() {
     this.productService = new ProductsServices();
+    this.userService = new UserService();
   }
 
   async getProducts(req, res) {
     try {
       const products = await this.productService.getProducts(req.query);
       res.send(products);
+      let user, admin, premium = null;
+
+      user = await this.userService.findOne(req.user.email)
+      admin = (user.role === "admin") ? true : false;
+      premium = (user.role === "premium") ? true : false;
+
+      res.render("products", {
+        products,
+        user,
+        admin,
+        premium,
+        active: { products: true }
+    });
+    
     } catch (error) {
       const productErr = new CustomeError({
         name: "Product Fetch Error",
@@ -54,7 +70,8 @@ class ProductController {
   }
 
   async addProduct(req, res) {
-    let {
+      
+      let {
       title,
       description,
       code,
@@ -170,6 +187,22 @@ class ProductController {
     }
   }
 
+   async createProduct (req, res, next) {
+    try {
+        let newProduct = req.body;
+        if (req.user.role === "premium") {
+            newProduct.owner = req.user.email;
+        }
+        let productCreated = await this.productService.createProduct(newProduct);
+
+        res.status(201).json(productCreated);
+
+    } catch (error) {
+        next(error);
+    }
+
+}
+
   async updateProduct(req, res) {
     try {
       const {
@@ -183,6 +216,17 @@ class ProductController {
         thumbnail,
       } = req.body;
       const pid = req.params.pid;
+
+      const existProduct = await this.productService.getProductById(pid)
+
+      if (!existProduct) {
+          return res.status(401).json({ status: "error", message: "The product doesn't exist" });
+      }
+
+      if (req.user.role === "premium" && req.user.email !== existProduct.owner) {
+          return res.status(403).json({ status: "error", message: "Product Owner or Admin role required" });
+      }
+
 
       const wasUpdated = await this.productService.updateProduct(pid, {
         title,
@@ -219,24 +263,16 @@ class ProductController {
     try {
       const pid = req.params.pid;
 
-      if (!mongoose.Types.ObjectId.isValid(pid)) {
-        req.logger.error("ID del producto no válido");
-        res.status(400).send({
-          status: "error",
-          message: "ID del producto no válido",
-        });
-        return;
+      const existProduct = await this.productService.getProductById(pid)
+
+      if (!existProduct) {
+          return res.status(401).json({ status: "error", message: "The product doesn't exist" });
       }
+      const premium = req.user.role === "premium"
+      const existProductOwner = req.user.email === existProduct.owner;
 
-      const product = await this.productService.getProductById(pid);
-
-      if (!product) {
-        console.log("Producto no encontrado");
-        res.status(404).send({
-          status: "error",
-          message: "Producto no encontrado",
-        });
-        return;
+      if (premium && !existProductOwner) {
+          return res.status(403).json({ status: "error", message: "Product Owner or Admin role required" });
       }
 
       const wasDeleted = await this.productService.deleteProduct(pid);

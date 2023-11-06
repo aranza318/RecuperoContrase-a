@@ -69,6 +69,20 @@ class ProductManager {
     }
 }
 
+async createProduct(parameters) {
+
+  const {title, description, code, price, stock, category, thumbnail, owner } = parameters;
+
+  if (!title || !description || !code || !price || !stock || !category) {
+     console.log("Algo esta incompleto revisar")
+  }
+
+  const product = await ProductRepositoryWithDao.createProduct({ title, description, code, price, stock, category, thumbnail, owner });
+  
+  log.logger.info(`Product Added: ${product}`);
+
+  return product;
+}
 
 
   async getProducts(params = {}) {

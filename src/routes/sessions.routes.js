@@ -17,7 +17,9 @@ serviceRouter.post("/login", (req, res) => authController.login(req, res));
 
 serviceRouter.post("/register", userController.register.bind(userController));
 
-serviceRouter.get("/restore", userController.restorePassword.bind(userController));
+serviceRouter.post("/restore", userController.restorePassword.bind(userController));
+
+serviceRouter.post("/recover", userController.recoverPass.bind(userController));
 
 serviceRouter.get(
   "/github",

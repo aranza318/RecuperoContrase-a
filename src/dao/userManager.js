@@ -46,6 +46,13 @@ class UserManager {
         throw error;
       }
     }
+
+    async findOne(email) {
+
+      const result = await userModel.findOne({ email }).lean();
+      return result;
+  };
+
   async restorePassword(email, hashedPassword) {
     try {
       const user = await userModel.findOne({ email });
@@ -65,6 +72,13 @@ class UserManager {
       return false;
     }
   }
+
+  async updateUser(userId, userToReplace){
+    const filter = {email: userId};
+    const update = {$set: userToReplace};
+    const result = await userModel.updateOne(filter, update);
+    return result;
+  };
 
 }
 

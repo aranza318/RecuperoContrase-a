@@ -25,7 +25,24 @@ class CartController {
 
   async getCart(req, res) {
     try {
-      const cart = await this.cartService.getCart(req.params.cid);
+      let admin, premium = null;
+      const user = await userService.findOne(req.user.email)
+      const cart = await this.cartService.getCart(req.params.cid); 
+      const products = cart.products;
+      const cartId = user.cart._id;
+
+      admin = (user.role === "admin") ? true : false;
+      premium = (user.role === "premium") ? true : false;
+
+        res.render("carts", {
+            cartId,
+            products,
+            user,
+            admin,
+            premium,
+            active: { cart: true }
+        });
+      
       res.send({ products: cart.products });
       req.logger.info("Carrito obtenido: ", cart)
     } catch (error) {

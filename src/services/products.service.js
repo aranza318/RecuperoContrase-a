@@ -26,6 +26,10 @@ class ProductService {
     return await this.productManager.updateProduct(id, product);
   }
 
+  async createProduct(parameters, product) {
+    return await this.productManager.createProduct(parameters, product);
+  }
+
   async deleteProduct(id) {
     return await this.productManager.deleteProduct(id);
   }

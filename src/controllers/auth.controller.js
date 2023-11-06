@@ -39,6 +39,9 @@ class AuthController {
     }
 
     req.logger.info("Full user data object:", userData.user);
+    
+    const myJson = JSON.stringify(userData);
+    console.log(myJson);
 
     req.logger.info("Assigned session:", req.session); 
 

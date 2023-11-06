@@ -2,6 +2,7 @@ import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/cartManager.js";
 import cartController from "../controllers/cart.controller.js";
+import { sendPasswordRecoveryEmail } from "../controllers/messages.controller.js";
 
 const checkSession = (req, res, next) => {
   req.logger.info('Checking session:', req.session);
@@ -110,6 +111,28 @@ viewsRouter.get("/profile", checkSession, (req, res) => {
 
 viewsRouter.get("/restore", async (req, res) => {
   res.render("restore");
+});
+
+viewsRouter.get("/recover", (req, res) =>{
+  res.render("recover")
+});
+
+viewsRouter.post("/api/email/sendRestoreLink", sendPasswordRecoveryEmail);
+
+viewsRouter.get("/reset-password", (req, res) => {
+  const token = req.query.token;
+  res.render("reset-password");
+});
+
+viewsRouter.get("/recoverLanding/:token", (req, res)=>{
+  try {
+    const token = req.params.token;
+    req.logger.debug(token);
+    res.render("recoverLanding", {token});
+  } catch (error) {
+     req.logger.error(error);
+     res.render("error")
+  }
 });
 
 viewsRouter.get("/faillogin", (req, res) => {

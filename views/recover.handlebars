@@ -1,10 +1,10 @@
-<html lang="en">
-
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../src/public/css/style.css">
-  <title>Document</title>
+  <title>Productos en tiempo real</title>
 </head>
 <body>
    <div class="row-md-4 d-flex align-items-center justify-content-center">
@@ -32,30 +32,20 @@
                      </li>
                  </ul>
             </div>
- <div class="container">
-      <div class="row">
+<div class="container">
+    <div class="row">
         <div class="col-md-4 offset-md-4">
-        <div class="user-data">
-          <h1 class="color1" >Bienvenido, {{user.full_name}} {{user.first_name}}</h1>
-          <p class="color2">Tu correo electrónico es: {{user.email}}</p>
-          <p class="color2">Tu rol es: {{user.role}}</p>
-          
+            <h1 class="color1">Restaurá tu Contraseña</h1>
+            <form class="color1" action="/api/email/sendRestoreLink" method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" name="email" class="form-control" id="email">
+                </div>
+                <button type="submit" class="botons" id="btnRestore" name="btnRestore">Restaurar</button>
+            </form>
         </div>
-        <div class="mb-3">
-      <div class="color1" >
-        <a href="/recover">
-        <button class="botons">Cambiar clave</button>
-        </a>
-   </div>
-      </div>
-      <form action="/api/sessions/logout" method="POST" class="col-md-4 offset-md-4">
-        <button type="submit" class="botons">Cerrar Sesión</button>
-      </form>
-      </div>
     </div>
 </div>
+<script src="../src/public/recover.js"></script>
 </body>
-
 </html>
-    </div>
-</div>
